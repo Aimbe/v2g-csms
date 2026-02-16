@@ -30,6 +30,9 @@ dependencies {
     // Spring Boot Starter Web (Optional - for REST API)
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // Spring Boot Starter WebSocket (OCPP 2.0.1 JSON-RPC 2.0)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
     // Spring Boot Starter Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
