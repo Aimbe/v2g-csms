@@ -1,7 +1,7 @@
 package com.charging.domain.enums;
 
 /**
- * OCPP 2.0.1 Charging State
+ * OCPP 2.1 Charging State
  * 충전 세션의 현재 상태를 나타냅니다.
  */
 public enum ChargingStateEnum {
@@ -23,5 +23,10 @@ public enum ChargingStateEnum {
     /**
      * 충전이 완료되었으나 아직 연결됨
      */
-    IDLE
+    IDLE,
+
+    /**
+     * EV가 연결됨 (OCPP 2.1 추가)
+     */
+    EV_CONNECTED
 }

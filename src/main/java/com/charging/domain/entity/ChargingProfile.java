@@ -116,6 +116,24 @@ public class ChargingProfile extends BaseEntity {
     private Boolean isActive = true;
 
     /**
+     * 최대 방전 전력 (W, V2G용)
+     */
+    @Column(name = "max_discharge_power", precision = 15, scale = 2)
+    private BigDecimal maxDischargePower;
+
+    /**
+     * 최소 방전 전력 (W, V2G용)
+     */
+    @Column(name = "min_discharge_power", precision = 15, scale = 2)
+    private BigDecimal minDischargePower;
+
+    /**
+     * 방전률 단위 (W 또는 A)
+     */
+    @Column(name = "discharge_rate_unit", length = 10)
+    private String dischargeRateUnit;
+
+    /**
      * 프로파일 활성화/비활성화
      */
     public void activate() {

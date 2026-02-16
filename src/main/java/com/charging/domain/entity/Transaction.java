@@ -1,7 +1,9 @@
 package com.charging.domain.entity;
 
 import com.charging.domain.enums.ChargingStateEnum;
+import com.charging.domain.enums.EnergyTransferModeEnum;
 import com.charging.domain.enums.TransactionEventEnum;
+import com.charging.domain.enums.V2XTransferModeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -109,6 +111,26 @@ public class Transaction extends BaseEntity {
      */
     @Column(name = "stop_reason", length = 100)
     private String stopReason;
+
+    /**
+     * 에너지 전송 모드 (OCPP 2.1)
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "energy_transfer_mode")
+    private EnergyTransferModeEnum energyTransferMode;
+
+    /**
+     * 방전 에너지 (kWh, V2G)
+     */
+    @Column(name = "discharged_energy", precision = 15, scale = 3)
+    private BigDecimal dischargedEnergy;
+
+    /**
+     * V2X 전송 모드 (nullable)
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "v2x_transfer_mode")
+    private V2XTransferModeEnum v2xTransferMode;
 
     /**
      * 소속 EVSE

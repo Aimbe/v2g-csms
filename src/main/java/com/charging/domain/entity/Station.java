@@ -74,6 +74,20 @@ public class Station extends BaseEntity {
     private Long billingPowerId;
 
     /**
+     * V2G 지원 여부 (OCPP 2.1)
+     */
+    @Column(name = "v2g_supported")
+    @Builder.Default
+    private Boolean v2gSupported = false;
+
+    /**
+     * ISO 15118 지원 여부 (OCPP 2.1)
+     */
+    @Column(name = "iso15118_supported")
+    @Builder.Default
+    private Boolean iso15118Supported = false;
+
+    /**
      * 충전소에 속한 EVSE 목록
      * 1:N 관계 - 하나의 충전소는 여러 EVSE를 가질 수 있음
      */
