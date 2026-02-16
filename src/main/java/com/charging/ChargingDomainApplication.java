@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * JPA 학습을 위한 Spring Boot 애플리케이션
  */
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.charging.domain.repository")
+@EnableJpaRepositories(basePackages = "com.charging.adapter.out.persistence.repository")
 public class ChargingDomainApplication {
 
     public static void main(String[] args) {
