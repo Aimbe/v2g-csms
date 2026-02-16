@@ -1,0 +1,15 @@
+package com.charging.domain.port.out;
+
+import com.charging.domain.entity.Transaction;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+public interface TransactionPort {
+    Transaction save(Transaction transaction);
+    Optional<Transaction> findByTransactionId(String transactionId);
+    List<Transaction> findActiveTransactions(String stationId);
+    List<Transaction> findByStationId(String stationId);
+    Optional<Transaction> findByTransactionIdWithMeterValues(String transactionId);
+    List<Transaction> findByDateRange(LocalDateTime startDate, LocalDateTime endDate);
+}
