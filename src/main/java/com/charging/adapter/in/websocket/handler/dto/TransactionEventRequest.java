@@ -10,7 +10,9 @@ public record TransactionEventRequest(
     int seqNo,
     TransactionInfo transactionInfo,
     IdTokenInfo idToken,
-    EvseInfo evse
+    EvseInfo evse,
+    String energyTransferMode,
+    String v2xTransferMode
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record TransactionInfo(

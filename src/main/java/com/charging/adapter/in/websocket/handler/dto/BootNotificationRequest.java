@@ -12,6 +12,8 @@ public record BootNotificationRequest(
         String model,
         String vendorName,
         String serialNumber,
-        String firmwareVersion
+        String firmwareVersion,
+        Boolean v2gSupported,
+        Boolean iso15118Supported
     ) {}
 }

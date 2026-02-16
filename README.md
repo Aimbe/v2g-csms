@@ -1,6 +1,6 @@
-# OCPP 2.0.1 충전 도메인 - Hexagonal Architecture 학습 프로젝트
+# OCPP 2.1 충전 도메인 (V2G 지원) - Hexagonal Architecture 학습 프로젝트
 
-OCPP 2.0.1 표준 기반 전기차 충전 시스템을 **Hexagonal Architecture (육각형 아키텍처)** 패턴과 WebSocket 기반 실시간 메시지 처리로 구현한 Spring Boot 학습 프로젝트입니다.
+OCPP 2.1 표준 기반 전기차 충전 시스템을 **Hexagonal Architecture (육각형 아키텍처)** 패턴과 WebSocket 기반 실시간 메시지 처리로 구현한 Spring Boot 학습 프로젝트입니다. V2G (Vehicle-to-Grid) 양방향 충전 기술을 지원합니다.
 
 ## 프로젝트 개요
 
@@ -277,6 +277,9 @@ ws://localhost:8080/ws/ocpp/{stationId}
 | **StatusNotification** | 커넥터/EVSE 상태 변경 알림 | StatusNotificationRequest | StatusNotificationResponse |
 | **MeterValues** | 측정값 전송 | MeterValuesRequest | MeterValuesResponse |
 | **Heartbeat** | 주기적 하트비트 | HeartbeatRequest | HeartbeatResponse |
+| **NotifyEVChargingNeeds** | EV 충전 요구사항 통보 (V2G) | NotifyEVChargingNeedsRequest | NotifyEVChargingNeedsResponse |
+| **NotifyEVChargingSchedule** | EV 충전 스케줄 통보 (V2G) | NotifyEVChargingScheduleRequest | NotifyEVChargingScheduleResponse |
+| **ClearedChargingLimit** | 충전 제한 해제 통보 (V2G) | ClearedChargingLimitRequest | ClearedChargingLimitResponse |
 
 ### WebSocket OCPP 메시지 예시
 
@@ -570,6 +573,56 @@ wscat -c ws://localhost:8080/ws/ocpp/ST-001
 
 자세한 내용은 `CLAUDE.md` 파일을 참고하세요.
 
+## OCPP 2.1 + V2G (Vehicle-to-Grid) 지원
+
+### V2G 양방향 충전 기능
+
+OCPP 2.1 표준을 기반으로 V2G (Vehicle-to-Grid) 양방향 충전 기술을 지원합니다.
+
+#### 주요 기능
+- **양방향 에너지 전송**: DC_BPT, AC_BPT 모드를 통한 EV <-> Grid 양방향 전력 전송
+- **ISO 15118-20 연동**: EV 충전 요구사항 (ChargingNeeds) 자동 관리
+- **V2X 지원**: V2G (Grid), V2H (Home), V2B (Building), V2L (Load)
+- **방전 프로파일**: TX_DISCHARGE_PROFILE을 통한 방전 전력 제어
+
+#### V2G 관련 OCPP 메시지
+
+| 메시지 | 방향 | 설명 |
+|--------|------|------|
+| NotifyEVChargingNeeds | CS -> CSMS | EV의 충전/방전 요구사항 전달 |
+| NotifyEVChargingSchedule | CS -> CSMS | EV의 충전 스케줄 전달 |
+| ClearedChargingLimit | CS -> CSMS | 외부 충전 제한 해제 알림 |
+
+#### V2G WebSocket 메시지 예시
+
+```json
+[2, "needs-001", "NotifyEVChargingNeeds", {
+  "evseId": 1,
+  "chargingNeeds": {
+    "requestedEnergyTransfer": "DC_BPT",
+    "departureTime": "2026-02-17T18:00:00Z",
+    "dcChargingParameters": {
+      "evMaxCurrent": 200,
+      "evMaxVoltage": 500,
+      "evMaxPower": 100000,
+      "stateOfCharge": 80,
+      "evEnergyCapacity": 75000
+    }
+  }
+}]
+```
+
+#### 에너지 전송 모드
+
+| 모드 | 설명 | 방향 |
+|------|------|------|
+| DC | DC 단방향 충전 | Grid -> EV |
+| AC_SINGLE_PHASE | AC 단상 충전 | Grid -> EV |
+| AC_THREE_PHASE | AC 3상 충전 | Grid -> EV |
+| DC_BPT | DC 양방향 전력 전송 | Grid <-> EV |
+| AC_BPT_SINGLE_PHASE | AC 단상 양방향 | Grid <-> EV |
+| AC_BPT_THREE_PHASE | AC 3상 양방향 | Grid <-> EV |
+
 ## 향후 확장 계획
 
 - [x] 기본 엔티티 및 리포지토리 구현
@@ -579,6 +632,7 @@ wscat -c ws://localhost:8080/ws/ocpp/ST-001
 - [x] WebSocket OCPP 메시지 처리 구현
 - [x] ArgumentResolver 기반 액션 디스패처 구현
 - [x] OCPP 액션 핸들러 구현 (BootNotification, TransactionEvent, StatusNotification, MeterValues, Heartbeat)
+- [x] OCPP 2.1 V2G 핸들러 구현 (NotifyEVChargingNeeds, NotifyEVChargingSchedule, ClearedChargingLimit)
 - [ ] DTO 클래스 확장 (모든 OCPP 메시지 타입 지원)
 - [ ] 나머지 Service 구현 (StationService, EvseService, ChargingProfileService)
 - [ ] 테스트 코드 작성 (JUnit 5, Mockito)
