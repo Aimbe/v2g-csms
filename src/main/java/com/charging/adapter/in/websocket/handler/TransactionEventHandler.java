@@ -4,6 +4,7 @@ import com.charging.adapter.in.websocket.OcppAction;
 import com.charging.adapter.in.websocket.OcppSession;
 import com.charging.adapter.in.websocket.handler.dto.TransactionEventRequest;
 import com.charging.adapter.in.websocket.handler.dto.TransactionEventResponse;
+import com.charging.adapter.in.websocket.support.annotation.OcppPayload;
 import com.charging.domain.enums.ChargingStateEnum;
 import com.charging.domain.port.in.TransactionUseCase;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class TransactionEventHandler {
     private final TransactionUseCase transactionUseCase;
 
     @OcppAction("TransactionEvent")
-    public TransactionEventResponse handle(TransactionEventRequest request, OcppSession session) {
+    public TransactionEventResponse handle(@OcppPayload TransactionEventRequest request, OcppSession session) {
         log.info("TransactionEvent 수신: stationId={}, eventType={}, transactionId={}",
                 session.getStationId(),
                 request.eventType(),
@@ -40,7 +41,8 @@ public class TransactionEventHandler {
             case "Updated" -> {
                 if (request.transactionInfo() != null && request.transactionInfo().chargingState() != null) {
                     try {
-                        ChargingStateEnum state = ChargingStateEnum.valueOf(request.transactionInfo().chargingState().toUpperCase());
+                        ChargingStateEnum state = ChargingStateEnum.valueOf(
+                                request.transactionInfo().chargingState().toUpperCase());
                         transactionUseCase.updateChargingState(
                                 request.transactionInfo().transactionId(),
                                 state
