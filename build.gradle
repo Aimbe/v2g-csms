@@ -36,10 +36,14 @@ dependencies {
     // Spring Boot Starter Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // Oracle JDBC Driver
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+    // MySQL JDBC Driver
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
-    // H2 Database (Optional - for testing)
+    // Flyway (DB Migration)
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+
+    // H2 Database (dev 프로파일용)
     runtimeOnly 'com.h2database:h2'
 
     // Lombok
