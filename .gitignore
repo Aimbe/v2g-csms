@@ -88,3 +88,8 @@ spring-boot-*.log
 application-local.yml
 application-dev.yml
 application-prod.yml
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+src/main/resources/static/
