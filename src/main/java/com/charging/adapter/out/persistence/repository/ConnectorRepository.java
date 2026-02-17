@@ -23,4 +23,6 @@ public interface ConnectorRepository extends JpaRepository<Connector, Long> {
 
     @Query("SELECT c FROM Connector c WHERE c.status = 'AVAILABLE' AND c.stationId = :stationId")
     List<Connector> findAvailableConnectors(@Param("stationId") String stationId);
+
+    long countByStatus(ConnectorStatusEnum status);
 }

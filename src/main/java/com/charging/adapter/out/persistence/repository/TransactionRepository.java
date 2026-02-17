@@ -32,4 +32,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query("SELECT t FROM Transaction t WHERE t.stationId = :stationId AND t.startTime BETWEEN :startDate AND :endDate")
     List<Transaction> findByStationIdAndDateRange(@Param("stationId") String stationId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT COUNT(t) FROM Transaction t WHERE t.stopTime IS NULL")
+    long countActiveTransactions();
+
+    long countByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 }

@@ -6,6 +6,7 @@ import com.charging.domain.port.out.StationPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -32,5 +33,10 @@ public class StationPersistenceAdapter implements StationPort {
     @Override
     public Optional<Station> findByStationIdWithEvses(String stationId) {
         return stationRepository.findByStationIdWithEvses(stationId);
+    }
+
+    @Override
+    public List<Station> findAll() {
+        return stationRepository.findAll();
     }
 }

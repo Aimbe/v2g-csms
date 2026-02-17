@@ -45,4 +45,24 @@ public class TransactionPersistenceAdapter implements TransactionPort {
     public List<Transaction> findByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         return transactionRepository.findByDateRange(startDate, endDate);
     }
+
+    @Override
+    public long countActiveTransactions() {
+        return transactionRepository.countActiveTransactions();
+    }
+
+    @Override
+    public List<Transaction> findAll() {
+        return transactionRepository.findAll();
+    }
+
+    @Override
+    public List<Transaction> findByStationIdAndDateRange(String stationId, LocalDateTime startDate, LocalDateTime endDate) {
+        return transactionRepository.findByStationIdAndDateRange(stationId, startDate, endDate);
+    }
+
+    @Override
+    public long countByStartTimeBetween(LocalDateTime start, LocalDateTime end) {
+        return transactionRepository.countByStartTimeBetween(start, end);
+    }
 }

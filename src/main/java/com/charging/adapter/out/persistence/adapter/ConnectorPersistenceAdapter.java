@@ -35,4 +35,9 @@ public class ConnectorPersistenceAdapter implements ConnectorPort {
     public List<Connector> findAvailableConnectors(String stationId) {
         return connectorRepository.findAvailableConnectors(stationId);
     }
+
+    @Override
+    public long countByStatus(ConnectorStatusEnum status) {
+        return connectorRepository.countByStatus(status);
+    }
 }

@@ -34,4 +34,9 @@ public class EvsePersistenceAdapter implements EvsePort {
     public Optional<Evse> findByEvseIdAndStationIdWithConnectors(Integer evseId, String stationId) {
         return evseRepository.findByEvseIdAndStationIdWithConnectors(evseId, stationId);
     }
+
+    @Override
+    public long count() {
+        return evseRepository.count();
+    }
 }

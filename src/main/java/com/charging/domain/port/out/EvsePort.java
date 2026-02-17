@@ -9,4 +9,5 @@ public interface EvsePort {
     Optional<Evse> findByEvseIdAndStationId(Integer evseId, String stationId);
     List<Evse> findByStationId(String stationId);
     Optional<Evse> findByEvseIdAndStationIdWithConnectors(Integer evseId, String stationId);
+    long count();
 }

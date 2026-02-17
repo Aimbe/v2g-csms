@@ -10,4 +10,5 @@ public interface ConnectorPort {
     Optional<Connector> findByEvseIdAndStationIdAndConnectorId(Integer evseId, String stationId, Integer connectorId);
     List<Connector> findByStationIdAndStatus(String stationId, ConnectorStatusEnum status);
     List<Connector> findAvailableConnectors(String stationId);
+    long countByStatus(ConnectorStatusEnum status);
 }

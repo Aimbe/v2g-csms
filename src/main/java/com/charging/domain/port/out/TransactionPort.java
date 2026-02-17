@@ -12,4 +12,8 @@ public interface TransactionPort {
     List<Transaction> findByStationId(String stationId);
     Optional<Transaction> findByTransactionIdWithMeterValues(String transactionId);
     List<Transaction> findByDateRange(LocalDateTime startDate, LocalDateTime endDate);
+    long countActiveTransactions();
+    List<Transaction> findAll();
+    List<Transaction> findByStationIdAndDateRange(String stationId, LocalDateTime startDate, LocalDateTime endDate);
+    long countByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 }
