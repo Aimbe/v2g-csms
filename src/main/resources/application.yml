@@ -2,14 +2,12 @@ spring:
   application:
     name: charging-domain
 
-  # 데이터소스 설정 (Oracle)
+  # MySQL 데이터소스 설정 (default)
   datasource:
-    # Oracle Database 연결 정보
-    # 실제 환경에 맞게 수정이 필요합니다
-    url: jdbc:oracle:thin:@localhost:1521:xe
-    username: your_username
-    password: your_password
-    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:mysql://localhost:3306/csms?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    username: csms
+    password: csms1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
     # 커넥션 풀 설정 (HikariCP)
     hikari:
@@ -21,49 +19,36 @@ spring:
 
   # JPA 설정
   jpa:
-    # Hibernate 설정
     hibernate:
-      # ddl-auto 옵션
-      # - none: 아무것도 하지 않음
-      # - validate: 엔티티와 테이블이 정상 매핑되었는지만 확인
-      # - update: 변경사항만 반영 (운영 환경에서는 사용 금지)
-      # - create: 애플리케이션 실행 시점에 기존 테이블을 삭제하고 다시 생성
-      # - create-drop: create와 같지만 종료 시점에 테이블 삭제
       ddl-auto: validate
-
-      # SQL 명명 전략 설정
       naming:
-        # 물리적 명명 전략 - 실제 테이블/컬럼명을 그대로 사용
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
-    # JPA 속성
     properties:
       hibernate:
-        # SQL 포맷팅
         format_sql: true
-        # SQL 주석 표시
         use_sql_comments: true
-        # 배치 처리 크기
+        globally_quoted_identifiers: true
         jdbc:
           batch_size: 20
-        # 컬렉션 기본 페치 크기
         default_batch_fetch_size: 100
 
-    # SQL 로그 출력
     show-sql: true
+
+  # Flyway 설정
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
 
 # 로깅 설정
 logging:
   level:
-    # 루트 로그 레벨
     root: INFO
-    # JPA/Hibernate 로그
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.hibernate.orm.jdbc.bind: TRACE
-    # 애플리케이션 로그
     com.charging: DEBUG
-    # Spring Framework 로그
     org.springframework.web: INFO
     org.springframework.data: INFO
 
@@ -94,6 +79,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
 
+  # Flyway 비활성화 (dev 프로파일)
+  flyway:
+    enabled: false
+
 ---
 # 운영 환경 프로파일
 spring:
@@ -101,11 +90,18 @@ spring:
     activate:
       on-profile: prod
 
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:csms}?useSSL=true&serverTimezone=Asia/Seoul
+    username: ${DB_USERNAME:csms}
+    password: ${DB_PASSWORD:csms1234}
+
   jpa:
     hibernate:
-      # 운영 환경에서는 validate 또는 none 사용
       ddl-auto: validate
     show-sql: false
+
+  flyway:
+    enabled: true
 
 logging:
   level:
