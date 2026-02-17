@@ -1,14 +1,19 @@
 package com.charging.adapter.in.web;
 
+import com.charging.adapter.in.web.dto.MeterValueResponse;
+import com.charging.adapter.in.web.dto.TransactionResponse;
 import com.charging.domain.entity.Transaction;
 import com.charging.domain.enums.ChargingStateEnum;
 import com.charging.domain.port.in.TransactionUseCase;
+import com.charging.domain.port.out.TransactionPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -18,6 +23,7 @@ import java.util.List;
 public class TransactionController {
 
     private final TransactionUseCase transactionUseCase;
+    private final TransactionPort transactionPort;
 
     @PostMapping("/start")
     public ResponseEntity<Transaction> startTransaction(
@@ -59,5 +65,46 @@ public class TransactionController {
         List<Transaction> transactions = transactionUseCase.getActiveTransactions(stationId);
 
         return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TransactionResponse>> getAllTransactions(
+            @RequestParam(required = false) String stationId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        List<Transaction> transactions;
+        if (stationId != null && startDate != null && endDate != null) {
+            transactions = transactionPort.findByStationIdAndDateRange(stationId, startDate, endDate);
+        } else if (startDate != null && endDate != null) {
+            transactions = transactionPort.findByDateRange(startDate, endDate);
+        } else if (stationId != null) {
+            transactions = transactionPort.findByStationId(stationId);
+        } else {
+            transactions = transactionPort.findAll();
+        }
+
+        List<TransactionResponse> responses = transactions.stream()
+                .map(t -> new TransactionResponse(
+                        t.getId(), t.getTransactionId(), t.getEvseId(), t.getStationId(),
+                        t.getConnectorId(), t.getIdToken(),
+                        t.getEventType() != null ? t.getEventType().name() : null,
+                        t.getChargingState() != null ? t.getChargingState().name() : null,
+                        t.getStartTime(), t.getStopTime(), t.getTotalEnergy(), t.getStopReason()))
+                .toList();
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/{transactionId}/meter-values")
+    public ResponseEntity<List<MeterValueResponse>> getTransactionMeterValues(
+            @PathVariable String transactionId) {
+        var txnOpt = transactionPort.findByTransactionIdWithMeterValues(transactionId);
+        if (txnOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        List<MeterValueResponse> responses = txnOpt.get().getMeterValues().stream()
+                .map(MeterValueResponse::from)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 }
