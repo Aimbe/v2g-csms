@@ -1,12 +1,11 @@
-# OCPP 2.1 충전 도메인 (V2G 지원) - Hexagonal Architecture 학습 프로젝트
+# OCPP 2.1 충전 도메인 (V2G 지원)
 
-OCPP 2.1 표준 기반 전기차 충전 시스템을 **Hexagonal Architecture (육각형 아키텍처)** 패턴과 WebSocket 기반 실시간 메시지 처리로 구현한 Spring Boot 학습 프로젝트입니다. V2G (Vehicle-to-Grid) 양방향 충전 기술을 지원합니다.
+OCPP 2.1 표준 기반 전기차 충전 시스템을 WebSocket 기반 실시간 메시지 처리로 구현한 프로젝트입니다. V2G (Vehicle-to-Grid) 양방향 충전 기술을 지원합니다.
 
 ## 프로젝트 개요
 
 이 프로젝트는 **OCPP 2.0.1 (Open Charge Point Protocol)** 표준을 따르는 충전 인프라 도메인 모델을 구현하며, 다음 아키텍처 원칙을 실습합니다:
 
-- **Hexagonal Architecture (Ports & Adapters)**: 도메인을 프로토콜과 기술 스택으로부터 분리
 - **SOLID 원칙**: 의존성 역전, 단일 책임, 개방-폐쇄 원칙
 - **Clean Architecture**: 계층 간 명확한 경계와 의존성 흐름
 - **WebSocket 실시간 통신**: OCPP 2.0.1 JSON-RPC 2.0 메시지 처리
