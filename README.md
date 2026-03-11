@@ -621,6 +621,10 @@ OCPP 2.1 표준을 기반으로 V2G (Vehicle-to-Grid) 양방향 충전 기술을
 | AC_BPT_SINGLE_PHASE | AC 단상 양방향 | Grid <-> EV |
 | AC_BPT_THREE_PHASE | AC 3상 양방향 | Grid <-> EV |
 
+## 추가 문서
+
+- [EDA + Kafka 적용 가이드](docs/eda-kafka.md): 현재 OCPP 처리 구조를 기준으로 Kafka를 어디에 붙일지 짧게 정리한 문서
+
 ## 향후 확장 계획
 
 - [x] 기본 엔티티 및 리포지토리 구현
