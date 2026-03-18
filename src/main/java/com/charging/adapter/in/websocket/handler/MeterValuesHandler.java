@@ -5,17 +5,21 @@ import com.charging.adapter.in.websocket.handler.dto.MeterValuesRequest;
 import com.charging.adapter.in.websocket.handler.dto.MeterValuesResponse;
 import com.charging.adapter.in.websocket.support.annotation.OcppPayload;
 import com.charging.adapter.in.websocket.support.annotation.StationId;
+import com.charging.application.outbox.MeterValuesOutboxFactory;
 import com.charging.domain.entity.MeterValue;
 import com.charging.domain.entity.Transaction;
 import com.charging.domain.enums.MeasurandEnum;
 import com.charging.domain.port.out.MeterValuePort;
+import com.charging.domain.port.out.OutboxEventPort;
 import com.charging.domain.port.out.TransactionPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,7 +29,10 @@ public class MeterValuesHandler {
 
     private final MeterValuePort meterValuePort;
     private final TransactionPort transactionPort;
+    private final OutboxEventPort outboxEventPort;
+    private final MeterValuesOutboxFactory meterValuesOutboxFactory;
 
+    @Transactional
     @OcppAction("MeterValues")
     public MeterValuesResponse handle(@OcppPayload MeterValuesRequest request,
                                       @StationId String stationId) {
@@ -44,10 +51,7 @@ public class MeterValuesHandler {
             });
         }
 
-        List<Transaction> activeTransactions = transactionPort.findActiveTransactions(stationId);
-        Transaction transaction = activeTransactions.stream()
-                .filter(t -> t.getEvseId() == request.evseId())
-                .findFirst()
+        Transaction transaction = transactionPort.findActiveTransactionByStationIdAndEvseId(stationId, request.evseId())
                 .orElse(null);
 
         if (transaction == null) {
@@ -56,6 +60,7 @@ public class MeterValuesHandler {
             return MeterValuesResponse.empty();
         }
 
+        List<MeterValue> meterValues = new ArrayList<>();
         if (request.meterValue() != null) {
             for (MeterValuesRequest.MeterValueData mv : request.meterValue()) {
                 if (mv.sampledValue() == null) continue;
@@ -80,10 +85,17 @@ public class MeterValuesHandler {
                             .build();
 
                     transaction.addMeterValue(meterValue);
-                    meterValuePort.save(meterValue);
+                    meterValues.add(meterValue);
                 }
             }
         }
+
+        if (meterValues.isEmpty()) {
+            return MeterValuesResponse.empty();
+        }
+
+        List<MeterValue> savedMeterValues = meterValuePort.saveAll(meterValues);
+        outboxEventPort.save(meterValuesOutboxFactory.create(transaction, request.evseId(), savedMeterValues));
 
         return MeterValuesResponse.empty();
     }

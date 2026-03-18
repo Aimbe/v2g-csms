@@ -27,6 +27,11 @@ public class TransactionPersistenceAdapter implements TransactionPort {
     }
 
     @Override
+    public Optional<Transaction> findActiveTransactionByStationIdAndEvseId(String stationId, Integer evseId) {
+        return transactionRepository.findActiveTransactionByStationIdAndEvseId(stationId, evseId);
+    }
+
+    @Override
     public List<Transaction> findActiveTransactions(String stationId) {
         return transactionRepository.findActiveTransactions(stationId);
     }

@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface TransactionPort {
     Transaction save(Transaction transaction);
     Optional<Transaction> findByTransactionId(String transactionId);
+    Optional<Transaction> findActiveTransactionByStationIdAndEvseId(String stationId, Integer evseId);
     List<Transaction> findActiveTransactions(String stationId);
     List<Transaction> findByStationId(String stationId);
     Optional<Transaction> findByTransactionIdWithMeterValues(String transactionId);

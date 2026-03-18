@@ -21,6 +21,11 @@ public class MeterValuePersistenceAdapter implements MeterValuePort {
     }
 
     @Override
+    public List<MeterValue> saveAll(List<MeterValue> meterValues) {
+        return meterValueRepository.saveAll(meterValues);
+    }
+
+    @Override
     public List<MeterValue> findByTransactionIdFkOrderByTimestampAsc(Long transactionId) {
         return meterValueRepository.findByTransactionIdFkOrderByTimestampAsc(transactionId);
     }

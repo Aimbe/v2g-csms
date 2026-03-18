@@ -1,5 +1,6 @@
 package com.charging.application.service;
 
+import com.charging.application.outbox.TransactionEventOutboxFactory;
 import com.charging.domain.entity.Evse;
 import com.charging.domain.entity.Transaction;
 import com.charging.domain.enums.ChargingStateEnum;
@@ -7,6 +8,7 @@ import com.charging.domain.enums.TransactionEventEnum;
 import com.charging.domain.exception.ResourceNotFoundException;
 import com.charging.domain.port.in.TransactionUseCase;
 import com.charging.domain.port.out.EvsePort;
+import com.charging.domain.port.out.OutboxEventPort;
 import com.charging.domain.port.out.TransactionPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,8 @@ public class TransactionServiceImpl implements TransactionUseCase {
 
     private final TransactionPort transactionPort;
     private final EvsePort evsePort;
+    private final OutboxEventPort outboxEventPort;
+    private final TransactionEventOutboxFactory transactionEventOutboxFactory;
 
     @Override
     @Transactional
@@ -51,6 +55,7 @@ public class TransactionServiceImpl implements TransactionUseCase {
         evse.addTransaction(transaction);
 
         Transaction savedTransaction = transactionPort.save(transaction);
+        appendTransactionEvent(savedTransaction);
         log.info("트랜잭션 시작 완료: transactionId={}", transactionId);
 
         return savedTransaction;
@@ -68,6 +73,7 @@ public class TransactionServiceImpl implements TransactionUseCase {
         transaction.calculateTotalEnergy();
 
         Transaction savedTransaction = transactionPort.save(transaction);
+        appendTransactionEvent(savedTransaction);
         log.info("트랜잭션 종료 완료: transactionId={}, totalEnergy={} kWh",
                 transactionId, transaction.getTotalEnergy());
 
@@ -84,7 +90,9 @@ public class TransactionServiceImpl implements TransactionUseCase {
 
         transaction.updateChargingState(newState);
 
-        return transactionPort.save(transaction);
+        Transaction savedTransaction = transactionPort.save(transaction);
+        appendTransactionEvent(savedTransaction);
+        return savedTransaction;
     }
 
     @Override
@@ -94,5 +102,9 @@ public class TransactionServiceImpl implements TransactionUseCase {
 
     private String generateTransactionId() {
         return "TXN-" + System.currentTimeMillis();
+    }
+
+    private void appendTransactionEvent(Transaction transaction) {
+        outboxEventPort.save(transactionEventOutboxFactory.create(transaction));
     }
 }

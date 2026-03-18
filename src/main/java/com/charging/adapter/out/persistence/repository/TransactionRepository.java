@@ -21,6 +21,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByEventType(TransactionEventEnum eventType);
     List<Transaction> findByChargingState(ChargingStateEnum chargingState);
 
+    @Query("SELECT t FROM Transaction t WHERE t.stopTime IS NULL AND t.stationId = :stationId AND t.evseId = :evseId")
+    Optional<Transaction> findActiveTransactionByStationIdAndEvseId(@Param("stationId") String stationId,
+                                                                    @Param("evseId") Integer evseId);
+
     @Query("SELECT t FROM Transaction t WHERE t.stopTime IS NULL AND t.stationId = :stationId")
     List<Transaction> findActiveTransactions(@Param("stationId") String stationId);
 

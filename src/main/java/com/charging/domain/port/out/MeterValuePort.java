@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface MeterValuePort {
     MeterValue save(MeterValue meterValue);
+    List<MeterValue> saveAll(List<MeterValue> meterValues);
     List<MeterValue> findByTransactionIdFkOrderByTimestampAsc(Long transactionId);
     List<MeterValue> findByTransactionIdFkAndMeasurand(Long transactionId, MeasurandEnum measurand);
     MeterValue findLatestByTransactionId(Long transactionId);
