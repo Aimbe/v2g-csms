@@ -624,6 +624,8 @@ OCPP 2.1 표준을 기반으로 V2G (Vehicle-to-Grid) 양방향 충전 기술을
 ## 추가 문서
 
 - [EDA + Kafka 적용 가이드](docs/eda-kafka.md): 현재 OCPP 처리 구조를 기준으로 Kafka를 어디에 붙일지 짧게 정리한 문서
+- [V2G Smart Charging Event Platform 설계안](docs/eda-v2g-smart-charging-platform.md): Outbox, Kafka, CQRS, Metering, V2G 오케스트레이션을 포함한 목표 아키텍처 설계 문서
+- [EDA 패키지 구조 설계안](docs/package-structure-eda.md): bounded context 기반 패키지 구성, 의존 방향, 단계별 리팩토링 목표를 정리한 문서
 
 ## 향후 확장 계획
 
