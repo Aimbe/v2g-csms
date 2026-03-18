@@ -36,6 +36,9 @@ dependencies {
     // Spring Boot Starter Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    // Spring Kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
     // MySQL JDBC Driver
     runtimeOnly 'com.mysql:mysql-connector-j'
 

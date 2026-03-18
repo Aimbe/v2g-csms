@@ -3,12 +3,16 @@ package com.charging;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * OCPP 2.0 충전기 도메인 애플리케이션
  * JPA 학습을 위한 Spring Boot 애플리케이션
  */
 @SpringBootApplication
+@EnableKafka
+@EnableScheduling
 @EnableJpaRepositories(basePackages = "com.charging.adapter.out.persistence.repository")
 public class ChargingDomainApplication {
 

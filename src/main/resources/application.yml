@@ -41,6 +41,35 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+app:
+  kafka:
+    topics:
+      transaction: ${APP_KAFKA_TOPIC_TRANSACTION:ocpp.transaction.v1}
+      metering: ${APP_KAFKA_TOPIC_METERING:ocpp.meter-value.v1}
+      v2g-needs: ${APP_KAFKA_TOPIC_V2G_NEEDS:ocpp.v2g.charging-needs.v1}
+      v2g-schedule: ${APP_KAFKA_TOPIC_V2G_SCHEDULE:ocpp.v2g.charging-schedule.v1}
+  outbox:
+    relay:
+      enabled: ${APP_OUTBOX_RELAY_ENABLED:false}
+      fixed-delay-ms: ${APP_OUTBOX_RELAY_FIXED_DELAY_MS:1000}
+      batch-size: ${APP_OUTBOX_RELAY_BATCH_SIZE:100}
+      max-retry-count: ${APP_OUTBOX_RELAY_MAX_RETRY_COUNT:5}
+  dashboard:
+    projection:
+      enabled: ${APP_DASHBOARD_PROJECTION_ENABLED:true}
+      consumer:
+        enabled: ${APP_DASHBOARD_PROJECTION_CONSUMER_ENABLED:false}
+  v2g:
+    orchestrator:
+      consumer:
+        enabled: ${APP_V2G_ORCHESTRATOR_CONSUMER_ENABLED:false}
+
 # 로깅 설정
 logging:
   level:
