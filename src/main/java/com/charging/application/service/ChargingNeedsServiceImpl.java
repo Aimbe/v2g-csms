@@ -1,9 +1,11 @@
 package com.charging.application.service;
 
+import com.charging.application.outbox.ChargingNeedsOutboxFactory;
 import com.charging.domain.entity.ChargingNeeds;
 import com.charging.domain.enums.EnergyTransferModeEnum;
 import com.charging.domain.port.in.ChargingNeedsUseCase;
 import com.charging.domain.port.out.ChargingNeedsPort;
+import com.charging.domain.port.out.OutboxEventPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import java.util.Optional;
 public class ChargingNeedsServiceImpl implements ChargingNeedsUseCase {
 
     private final ChargingNeedsPort chargingNeedsPort;
+    private final OutboxEventPort outboxEventPort;
+    private final ChargingNeedsOutboxFactory chargingNeedsOutboxFactory;
 
     @Override
     @Transactional
@@ -44,6 +48,7 @@ public class ChargingNeedsServiceImpl implements ChargingNeedsUseCase {
                 .build();
 
         ChargingNeeds saved = chargingNeedsPort.save(chargingNeeds);
+        outboxEventPort.save(chargingNeedsOutboxFactory.create(saved));
         log.info("EV 충전 요구사항 저장 완료: id={}", saved.getId());
 
         return saved;
