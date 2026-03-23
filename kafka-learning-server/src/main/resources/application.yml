@@ -1,0 +1,29 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  application:
+    name: kafka-learning-server
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: ${LEARNING_KAFKA_CONSUMER_GROUP:kafka-learning-server}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      missing-topics-fatal: false
+
+learning:
+  kafka:
+    topics: ${LEARNING_KAFKA_TOPICS:learning.demo.v1,learning.demo.retry.v1}
+    consumer-group: ${LEARNING_KAFKA_CONSUMER_GROUP:kafka-learning-server}
+    history-size: ${LEARNING_KAFKA_HISTORY_SIZE:200}
+
+logging:
+  level:
+    root: INFO
+    com.charging.kafkalearning: DEBUG
