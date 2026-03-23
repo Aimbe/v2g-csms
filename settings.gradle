@@ -5,4 +5,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'charging-domain'
+rootProject.name = 'v2g-csms'
+include 'csms-app', 'kafka-learning-server'
